@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>الخلوة — رحلة جميلة مع كتابي</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div class="title">خلوة</div>
+    <div class="subtitle">رحلة جميلة مع كتابي</div>
+  </div>
+
+  <div id="home" class="card">
+    <p class="small center">اختر فئتك:</p>
+    <button class="btn" onclick="showPanel('admin')">🔴 المسؤول</button>
+    <button class="btn" onclick="showPanel('teacher')">🔵 الخادم</button>
+    <button class="btn" onclick="showPanel('child')">🟢 الطفل</button>
+    <button id="leaderBtn" class="btn btn-secondary" style="margin-top:10px">🏆 لوحة الشرف</button>
+    <div class="small center muted" style="margin-top:8px">صفوف: CLASS1 .. CLASS6</div>
+  </div>
+
+  <div id="mainInfo" class="card" style="display:none"><div id="todayTitle" class="title"></div><div id="kholwaTimer" class="timer"></div></div>
+
+  <!-- ADMIN -->
+  <div id="admin" class="card" style="display:none">
+    <h3 class="center">المسؤول</h3>
+    <div id="adminLoginBox">
+      <label>كلمة مرور المسؤول:</label>
+      <input id="adminPass" class="input" type="password" placeholder="ادخل كلمة المرور">
+      <div style="display:flex;gap:8px">
+        <button class="btn" onclick="adminLogin()">دخول</button>
+        <button class="btn btn-secondary" onclick="goHome()">عودة</button>
+      </div>
+    </div>
+
+    <div id="adminPanel" style="display:none">
+      <h4>إضافة خلوة جديدة</h4>
+      <label>عنوان الخلوة:</label><input id="kTitle" class="input" placeholder="عنوان (اختياري)">
+      <label>تاريخ العرض:</label><input id="kDate" class="input" type="date" value="">
+      <label>نص الخلوة (اختياري):</label><textarea id="kText" class="input" rows="3"></textarea>
+      <label>أو رفع صورة / PDF من الكاميرا أو الجهاز:</label><input id="kFile" class="input" type="file" accept="image/*,application/pdf" capture="camera">
+      <hr>
+      <h4>سؤال الخلوة (3 اختيارات)</h4>
+      <label>نص السؤال:</label><input id="qText" class="input">
+      <label>الخيار 1:</label><input id="q1" class="input">
+      <label>الخيار 2:</label><input id="q2" class="input">
+      <label>الخيار 3:</label><input id="q3" class="input">
+      <label>الإجابة الصحيحة (رقم):</label><select id="qCorrect" class="input"><option value="0">1</option><option value="1">2</option><option value="2">3</option></select>
+      <label>نقاط هذه الخلوة (عند الإجابة الصحيحة):</label><input id="pointsValue" class="input" type="number" value="10">
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button class="btn" onclick="addKholwa()">إضافة الخلوة</button>
+        <button class="btn btn-secondary" onclick="previewKholwaToday()">عرض خلوة اليوم</button>
+      </div>
+
+      <div id="publishSuccess" class="success-box" style="display:none">
+        <div>تم نشر الخلوة بنجاح 🎉</div>
+        <div style="margin-top:8px"><button class="btn btn-secondary" id="viewPublished">عرض الخلوة المنشورة</button></div>
+        <div style="margin-top:8px">
+          <label>تحميل/رفع بيانات (data.json):</label>
+          <div style="display:flex;gap:8px;margin-top:6px">
+            <a id="downloadData" style="display:none" class="btn btn-secondary">تحميل data.json</a>
+            <input type="file" accept="application/json" onchange="uploadDataFile(this)" class="input">
+          </div>
+        </div>
+      </div>
+
+      <hr>
+      <h4>الخلوات المُضافة</h4><div id="kList" class="note"></div>
+      <hr>
+      <h4>إدارة الخدام</h4>
+      <label>اسم الخادم:</label><input id="tuser" class="input">
+      <label>كلمة المرور للخادم:</label><input id="tpass" class="input" value="servant123" type="text">
+      <label>اختر فصل للخادم:</label><select id="tclass" class="input"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option></select>
+      <button class="btn" onclick="createTeacher()">إنشاء خادم</button>
+      <hr>
+      <h4>إعدادات عامة</h4>
+      <label>قيمة النقاط الافتراضية لكل خلوة:</label><input id="pointsValueGlobal" class="input" type="number" value="10">
+      <button class="btn btn-secondary" onclick="setDefaultPoints()">حفظ الإعدادات</button>
+      <hr>
+      <h4>الأيام السابقة</h4><div id="historyList" class="note"></div>
+      <hr>
+      <h4>التقارير</h4><div id="reportArea" class="note"></div>
+      <div style="display:flex;gap:8px;margin-top:8px"><button class="btn btn-secondary" onclick="resetAll()">تصفير البيانات</button></div>
+      <div class="back-btn" onclick="goHome()">🔙 عوده</div>
+    </div>
+  </div>
+
+  <!-- TEACHER -->
+  <div id="teacher" class="card" style="display:none">
+    <h3 class="center">الخادم</h3>
+    <div id="teacherLoginBox">
+      <label>اسم المستخدم:</label><input id="loginUser" class="input">
+      <label>كلمة المرور:</label><input id="loginPass" class="input" type="password">
+      <div style="display:flex;gap:8px">
+        <button class="btn" onclick="teacherLogin()">دخول</button>
+        <button class="btn btn-secondary" onclick="goHome()">عودة</button>
+      </div>
+    </div>
+    <div id="teacherPanel" style="display:none">
+      <h4>طلاب الفصل <span id="teacherClass" class="note"></span></h4>
+      <label>أضف أسماء الطلاب (افصل بفاصلة):</label><textarea id="studentNames" class="input" rows="3"></textarea>
+      <button class="btn" onclick="addStudents()">إضافة</button>
+      <div id="teacherStatus" class="note"></div>
+      <div class="back-btn" onclick="goHome()">🔙 عوده</div>
+    </div>
+  </div>
+
+  <!-- CHILD -->
+  <div id="child" class="card" style="display:none">
+    <h3 class="center">الطفل</h3>
+    <div id="childEntry">
+      <label>الاسم:</label><input id="childName" class="input">
+      <label>رقم الفصل:</label><select id="childClass" class="input"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option></select>
+      <button class="btn" onclick="enterKholwa()">فتح الخلوة</button>
+      <div class="small note">لو ظهرت "الخلوة مغلقة" تأكد أن المسؤول رفع ملف <code>data.json</code> على الاستضافة.</div>
+    </div>
+    <div id="kholwaView" style="display:none">
+      <div id="childScore" class="note small"></div>
+      <div id="kholwaContent" class="note"></div>
+      <div id="questionArea" class="note"></div>
+      <div id="choicesArea"></div>
+      <div id="resultArea" class="note"></div>
+      <div class="back-btn" onclick="goHome()">🔙 عوده</div>
+    </div>
+  </div>
+
+  <!-- LEADERBOARD -->
+  <div id="leader" class="card" style="display:none">
+    <h3 class="center">لوحة الشرف</h3>
+    <ul id="leaderList" class="leaderboard"></ul>
+    <div class="back-btn" id="leaderBack">🔙 عوده</div>
+  </div>
+
+  <div class="small center muted">إعداد خدمة مدارس الأحد</div>
+</div>
+<script src="script.js"></script>
+</body>
+</html>
