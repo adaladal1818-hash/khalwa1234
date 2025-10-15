@@ -52,6 +52,7 @@ html,body{
     border:1px solid #f0e6d6
 }
 .btn{
+    .btn{
     display:block;
     width:100%;
     padding:12px;
@@ -62,9 +63,10 @@ html,body{
     cursor:pointer;
     margin-top:8px;
     background:linear-gradient(90deg,var(--gold),#c9a14a);
-    color:#ffffff;
+    color:#000000;              /* غيرت لأسود */
     box-shadow:0 2px 8px rgba(184,134,11,0.3);
     transition:all 0.3s ease
+}
 }
 .btn:hover{
     transform:translateY(-2px);
