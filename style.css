@@ -1,13 +1,15 @@
 [file name]: style.css
 [file content begin]
 :root{
+    :root{
     --bg:#f8f6f2;
     --card:#ffffff;
-    --muted:#8a7356;
+    --muted:#666666;           /* غيرت لرمادي غامق */
     --gold:#b8860b;
-    --text:#2a2a2a;
+    --text:#000000;            /* غيرت لأسود */
     --accent:#2a9d8f;
     --light-gold:#f5e8c8;
+}
 }
 *{box-sizing:border-box}
 html,body{
